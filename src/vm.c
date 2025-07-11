@@ -1,3 +1,6 @@
+#include "bootmem.h"
+#include <stdio.h>
+
 #include "vm.h"
 
 vm_t *vm_new()
@@ -12,12 +15,15 @@ vm_t *vm_new()
     vm->frames = stack_new(capacity);
     if (vm->frames == NULL)
     {
+        free(vm);
         return NULL;
     }
 
     vm->objects = stack_new(capacity);
     if (vm->objects == NULL)
     {
+        stack_free(vm->frames);
+        free(vm);
         return NULL;
     }
 

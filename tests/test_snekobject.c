@@ -427,5 +427,10 @@ static MunitTest snekobject_tests[] = {
     {"/add/array", test_array_add, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};
 
-MunitSuite snekobject_suite = {"/snekobject", snekobject_tests, NULL, 1,
-                               MUNIT_SUITE_OPTION_NONE};
+MunitSuite snekobject_suite = {
+    "/snekobject",
+    snekobject_tests,
+    NULL,
+    1,
+    MUNIT_SUITE_OPTION_NONE,
+};
