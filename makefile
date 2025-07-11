@@ -1,32 +1,40 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -g
-SRC = src
-TESTS = tests
-MUNIT = munit
-BUILD = build
+CC      := gcc
+CFLAGS  := -Wall -Wextra -g -MMD -MP
+INCLUDES := -I$(SRC_DIR) -I$(MUNIT_DIR)
 
-SRCS = $(SRC)/snekobject.c $(SRC)/bootmem.c $(SRC)/stack.c $(SRC)/vm.c
-TEST_SRCS = $(TESTS)/test_snekobject.c $(TESTS)/test_stack.c $(TESTS)/test_vm.c $(TESTS)/tests_runner.c
-MUNIT_SRC = $(MUNIT)/munit.c
+SRC_DIR    := src
+TESTS_DIR  := tests
+MUNIT_DIR  := munit
+BUILD_DIR  := build
+OBJ_DIR    := $(BUILD_DIR)/obj
+BIN        := $(BUILD_DIR)/all_tests
 
-OBJS = $(SRCS:.c=.o) $(TEST_SRCS:.c=.o) $(MUNIT_SRC:.c=.o)
-TARGET = $(BUILD)/all_tests
+SRC_FILES      := $(wildcard $(SRC_DIR)/*.c)
+TEST_SRC_FILES := $(wildcard $(TESTS_DIR)/*.c)
+MUNIT_FILES    := $(wildcard $(MUNIT_DIR)/*.c)
 
+ALL_SRC        := $(SRC_FILES) $(TEST_SRC_FILES) $(MUNIT_FILES)
+OBJ_FILES      := $(patsubst %.c, $(OBJ_DIR)/%.o, $(ALL_SRC))
+DEP_FILES      := $(OBJ_FILES:.o=.d)
+
+# Targets
 .PHONY: all run clean
 
-all: $(BUILD) $(TARGET)
+all: $(BIN)
 
-$(BUILD):
-	mkdir -p $(BUILD)
-
-$(TARGET): $(OBJS)
+$(BIN): $(OBJ_FILES)
 	$(CC) $(CFLAGS) -o $@ $^
 
-%.o: %.c
-	$(CC) $(CFLAGS) -I$(SRC) -I$(MUNIT) -c $< -o $@
+# Pattern rule for compiling .c files to .o in build/obj/
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 run: all
-	./$(TARGET)
+	./$(BIN)
 
 clean:
-	rm -rf $(BUILD) $(SRC)/*.o $(TESTS)/*.o $(MUNIT)/*.o
+	rm -rf $(BUILD_DIR)
+
+# Include auto-generated dependency files, ignore if they don't exist
+-include $(DEP_FILES)
