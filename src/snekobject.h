@@ -1,3 +1,4 @@
+#pragma once
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -42,12 +43,16 @@ typedef struct SnekObject
 
 } snek_object_t;
 
-snek_object_t *new_snek_integer(int value);
-snek_object_t *new_snek_float(float value);
-snek_object_t *new_snek_string(char *value);
-snek_object_t *new_snek_array(size_t size);
-snek_object_t *new_snek_vector3(snek_object_t *x, snek_object_t *y,
-                                snek_object_t *z);
+// - Moved to sneknew.h
+// snek_object_t *_new_snek_object();
+// snek_object_t *new_snek_integer(int value);
+// snek_object_t *new_snek_float(float value);
+// snek_object_t *new_snek_string(char *value);
+// snek_object_t *new_snek_array(size_t size);
+// snek_object_t *new_snek_vector3(snek_object_t *x, snek_object_t *y,
+//                                 snek_object_t *z);
+
 bool snek_array_set(snek_object_t *array, size_t index, snek_object_t *value);
 snek_object_t *snek_array_get(snek_object_t *array, size_t index);
 snek_object_t *snek_add(snek_object_t *a, snek_object_t *b);
+void snek_object_free(snek_object_t *obj);

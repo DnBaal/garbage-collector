@@ -5,104 +5,6 @@
 
 #include "snekobject.h"
 
-snek_object_t *_new_snek_object()
-{
-  snek_object_t *obj = calloc(1, sizeof(snek_object_t));
-  if (obj == NULL)
-  {
-    return NULL;
-  }
-
-  return obj;
-}
-
-snek_object_t *new_snek_integer(int value)
-{
-  snek_object_t *obj = _new_snek_object();
-  if (obj == NULL)
-  {
-    return NULL;
-  }
-
-  obj->kind = INTEGER;
-  obj->data.v_int = value;
-  return obj;
-}
-
-snek_object_t *new_snek_float(float value)
-{
-  snek_object_t *obj = _new_snek_object();
-  if (obj == NULL)
-  {
-    return NULL;
-  }
-
-  obj->kind = FLOAT;
-  obj->data.v_float = value;
-  return obj;
-}
-
-snek_object_t *new_snek_string(char *value)
-{
-  snek_object_t *obj = _new_snek_object();
-  if (obj == NULL)
-  {
-    return NULL;
-  }
-
-  size_t len = strlen(value);
-  char *dst = malloc(len + 1);
-  if (dst == NULL)
-  {
-    free(obj);
-    return NULL;
-  }
-  strcpy(dst, value);
-
-  obj->kind = STRING;
-  obj->data.v_string = dst;
-
-  return obj;
-}
-
-snek_object_t *new_snek_vector3(snek_object_t *x, snek_object_t *y,
-                                snek_object_t *z)
-{
-  if (x == NULL || y == NULL || z == NULL)
-    return NULL;
-  snek_object_t *obj = _new_snek_object();
-  if (obj == NULL)
-  {
-    return NULL;
-  }
-
-  obj->kind = VECTOR3;
-  snek_vector_t vector3 = {.x = x, .y = y, .z = z};
-  obj->data.v_vector3 = vector3;
-
-  return obj;
-}
-
-snek_object_t *new_snek_array(size_t size)
-{
-  snek_object_t *obj = _new_snek_object();
-  if (obj == NULL)
-  {
-    return NULL;
-  }
-
-  snek_object_t **dst = calloc(size, sizeof(snek_object_t *));
-  if (dst == NULL)
-  {
-    free(obj);
-    return NULL;
-  }
-
-  obj->kind = ARRAY;
-  obj->data.v_array = (snek_array_t){.size = size, .elements = dst};
-  return obj;
-}
-
 bool snek_array_set(snek_object_t *snek_obj, size_t index,
                     snek_object_t *value)
 {
@@ -248,3 +150,123 @@ snek_object_t *snek_add(snek_object_t *a, snek_object_t *b)
     return NULL;
   }
 }
+
+void snek_object_free(snek_object_t *obj)
+{
+  switch (obj->kind)
+  {
+  case INTEGER:
+  case FLOAT:
+    break;
+  case STRING:
+    free(obj->data.v_string);
+    break;
+  case VECTOR3:
+    break;
+  case ARRAY:
+    snek_array_t *array = &obj->data.v_array;
+    free(array->elements);
+    break;
+  }
+  free(obj);
+}
+
+// Moved to sneknew.h and refactored, test_snekobject.c -> test_vm.c
+
+// snek_object_t *_new_snek_object()
+// {
+//   snek_object_t *obj = calloc(1, sizeof(snek_object_t));
+//   if (obj == NULL)
+//   {
+//     return NULL;
+//   }
+
+//   return obj;
+// }
+
+// snek_object_t *new_snek_integer(int value)
+// {
+//   snek_object_t *obj = _new_snek_object();
+//   if (obj == NULL)
+//   {
+//     return NULL;
+//   }
+
+//   obj->kind = INTEGER;
+//   obj->data.v_int = value;
+//   return obj;
+// }
+
+// snek_object_t *new_snek_float(float value)
+// {
+//   snek_object_t *obj = _new_snek_object();
+//   if (obj == NULL)
+//   {
+//     return NULL;
+//   }
+
+//   obj->kind = FLOAT;
+//   obj->data.v_float = value;
+//   return obj;
+// }
+
+// snek_object_t *new_snek_string(char *value)
+// {
+//   snek_object_t *obj = _new_snek_object();
+//   if (obj == NULL)
+//   {
+//     return NULL;
+//   }
+
+//   size_t len = strlen(value);
+//   char *dst = malloc(len + 1);
+//   if (dst == NULL)
+//   {
+//     free(obj);
+//     return NULL;
+//   }
+//   strcpy(dst, value);
+
+//   obj->kind = STRING;
+//   obj->data.v_string = dst;
+
+//   return obj;
+// }
+
+// snek_object_t *new_snek_vector3(snek_object_t *x, snek_object_t *y,
+//                                 snek_object_t *z)
+// {
+//   if (x == NULL || y == NULL || z == NULL)
+//     return NULL;
+//   snek_object_t *obj = _new_snek_object();
+//   if (obj == NULL)
+//   {
+//     return NULL;
+//   }
+
+//   obj->kind = VECTOR3;
+//   snek_vector_t vector3 = {.x = x, .y = y, .z = z};
+//   obj->data.v_vector3 = vector3;
+
+//   return obj;
+// }
+
+// snek_object_t *new_snek_array(size_t size)
+// {
+//   snek_object_t *obj = _new_snek_object();
+//   if (obj == NULL)
+//   {
+//     return NULL;
+//   }
+
+//   snek_object_t **dst = calloc(size, sizeof(snek_object_t *));
+//   if (dst == NULL)
+//   {
+//     free(obj);
+//     return NULL;
+//   }
+
+//   obj->kind = ARRAY;
+//   obj->data.v_array = (snek_array_t){.size = size, .elements = dst};
+//   return obj;
+// }
