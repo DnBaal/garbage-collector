@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 /* Tracking allocation functions */
 void *boot_malloc(size_t size);
@@ -12,6 +13,7 @@ void boot_free(void *ptr);
 
 /* Memory tracking check */
 int boot_all_freed(void);
+bool boot_is_freed(void *ptr);
 
 /* Macros to replace malloc/free in your code */
 #ifndef BOOTMEM_IMPLEMENTATION

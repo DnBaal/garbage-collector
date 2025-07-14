@@ -37,6 +37,8 @@ typedef union SnekObjectData
 
 typedef struct SnekObject
 {
+  bool is_marked;
+
   int ref_count;
   snek_object_kind_t kind;
   snek_object_data_t data;

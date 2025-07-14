@@ -74,7 +74,7 @@ void stack_remove_nulls(stack_t *stack)
     size_t new_count = 0;
 
     // Iterate through the stack and count non-null elements
-    for (size_t i = 0; i < stack->count; i++)
+    for (int i = 0; i < stack->count; i++)
     {
         if (stack->data[i] != NULL)
         {
